@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD</title>
+    <style>
+        .center {
+       /*border: 5px solid #FFFF00;*/
+       text-align: center;
+       padding-top: 100px;
+       }
+   </style>
+   <script>
+       function insert() {
+
+        if(checkParam())
+        {
+            document.getElementById('message').innerHTML = "Inserting";
+            data = {
+                    'id' : document.getElementById('unid').value,
+                    'name'  : document.getElementById("Name").value,
+                    'email' : document.getElementById('email').value,
+                    
+                };
+                console.log(data);
+                data = JSON.stringify(data);
+            fetch("http://localhost:8888/insert",
+            {
+                
+                method: "POST",
+                body: data
+            })  .then(res => res.text())
+                .then(info => {
+                
+                    const obj = JSON.parse(info);
+                    document.getElementById('message').innerHTML = obj.inserted;
+                    
+                })
+                .catch(error => {
+                // enter your logic for when there is an error (ex. error toast)
+                console.log(error)
+                })  
+
+                
+            clearForm();
+        }
+        
+       }
+       function Fetch() {
+
+        document.getElementById('message').innerHTML = "Fetching";
+       /* const url = "https://localhost:8888/fetch";*/
+       var id = document.getElementById('unid').value;
+
+        if(checkParam()) {
+        fetch("http://localhost:8888/fetch/"+id,
+        {
+            
+            method: "GET"
+        })
+        .then(res => res.text())
+                .then(info => {
+                    const obj2 = JSON.parse(info); 
+                    document.getElementById('message').innerHTML = info;
+                })
+                .catch(error => {
+                // enter your logic for when there is an error (ex. error toast)
+                
+                console.log(error)
+                })  
+               
+       
+
+        clearForm();
+        }
+        
+       }
+       function update() {
+        document.getElementById('message').innerHTML = "Updating";
+        //const url = "https://localhost:8888/update";
+         data = {
+               'id' : document.getElementById('unid').value,
+                'name'  : document.getElementById("Name").value,
+                'email' : document.getElementById('email').value,
+                
+            };
+        data = JSON.stringify(data);
+        if(checkParam()){
+        fetch("http://localhost:8888/update",
+        {
+            
+            method: "PUT",
+            body: data
+        })
+        .then(res => res.text())
+                .then(info => {
+                
+                    const obj3 = JSON.parse(info);
+                    document.getElementById('message').innerHTML = obj3.updated;
+                })
+                .catch(error => {
+                // enter your logic for when there is an error (ex. error toast)
+                document.getElementById('message').innerHTML = data;
+                console.log(error)
+                })
+               
+        clearForm();
+        }
+        
+
+       }
+       
+       function remove() {
+
+        document.getElementById('message').innerHTML = "Deleting";
+            data = {
+               'id' : document.getElementById('unid').value,
+                
+            };
+            data = JSON.stringify(data);
+        if(checkParam()){
+            fetch("http://localhost:8888/delete",
+            {
+                
+                method: "DELETE",
+                body: data
+            })
+            .then(res => res.text())
+                .then(info => {
+                
+                    const obj4 = JSON.parse(info);
+                    document.getElementById('message').innerHTML = obj4.deleted;
+                })
+                .catch(error => {
+                // enter your logic for when there is an error (ex. error toast)
+                console.log(error)
+                })
+                
+            
+            clearForm();
+        }
+
+       }
+    function clearForm()
+    {
+        
+        document.getElementById('unid').value='';
+        document.getElementById('Name').value='';
+        document.getElementById('email').value=''
+    }
+    function checkParam() {
+        var id = document.getElementById("unid").value;
+        if(id == null || id == "") {
+            alert("Enter a Valid id");
+            return false;
+        }
+        //alert("Entered");
+        return true;
+    }
+</script>
+</head>
+<body>
+    <div class="center">
+    <form method="post">
+        <p><b>CRUD</b></p>
+        <input type="text" id="unid" name="UniqId" placeholder="Unique id" required></br>
+        <input type="text" id="Name" name="Name" placeholder="Name"  required></br>
+        <input type="email" id = "email" name="email" placeholder="Email" required></br>
+   
+    </br>
+        <button type="button" name="Insert" onclick="insert()"><b>Insert</b></button>
+        <button type="button" name="Retrive" onclick="Fetch()"><b>Fetch</b></button>
+        <button type="button" name="Update" onclick="update()"><b>Update</b></button>
+        <button type="button" name="Delete" onclick="remove()"><b>Delete</b></button></br></br>
+        <span id='message'></span></br>
+    </form>
+</div>
+</body>
+</html>
